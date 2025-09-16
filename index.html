@@ -20,14 +20,14 @@
         }
 
         create(){
-            this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'lockwall')
+            /*this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'lockwall')
                 .setOrigin(0.5)
-                .setDisplaySize(this.sys.game.config.width, this.sys.game.config.height);
+                .setDisplaySize(this.sys.game.config.width, this.sys.game.config.height);*/
 
-            this.bg = this.add.image(0, 0, 'bg').setOrigin(0);
-            this.resize(this.scale.gameSize.width, this.scale.gameSize.height);
+            this.bg = this.add.image(0, 0, 'lockwall').setOrigin(0.5,0.5);
+            this.fitBgToCanvas(this.scale.gameSize.width, this.scale.gameSize.height);
             this.scale.on('resize', (gameSize) => {
-                this.resize(gameSize.width, gameSize.height);
+                this.fitBgToCanvas(gameSize.width, gameSize.height);
             });
 
             // --- 1) 电脑端：Enter ---
@@ -60,8 +60,17 @@
             });
         }
 
-        resize(width, height) {
-            this.bg.setDisplaySize(width, height); // 拉伸背景图
+        fitBgToCanvas(canvasW, canvasH){
+            // 原图尺寸
+            const tex = this.textures.get('bg').getSourceImage();
+            const imgW = tex.width;
+            const imgH = tex.height;
+
+            // 按比例“容纳”在画布内（letterbox）
+            const scale = Math.min(canvasW / imgW, canvasH / imgH);
+
+            this.bg.setDisplaySize(imgW * scale, imgH * scale);
+            this.bg.setPosition(canvasW / 2, canvasH / 2);
         }
 
         update(){
