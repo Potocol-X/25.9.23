@@ -19,15 +19,12 @@
         }
 
         create(){
-            /*this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'lockwall')
-                .setOrigin(0.5)
-                .setDisplaySize(this.sys.game.config.width, this.sys.game.config.height);*/
 
             this.bg = this.add.image(0, 0, 'lockwall').setOrigin(0.5,0.5);
-            /*this.fitBgToCanvas(this.scale.gameSize.width, this.scale.gameSize.height);
+            this.fitBgToCanvas(this.scale.gameSize.width, this.scale.gameSize.height);
             this.scale.on('resize', (gameSize) => {
                 this.fitBgToCanvas(gameSize.width, gameSize.height);
-            });*/
+            });
 
             // --- 1) 电脑端：Enter ---
             this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
@@ -61,14 +58,14 @@
 
         fitBgToCanvas(canvasW, canvasH){
             // 原图尺寸
-            const tex = this.textures.get('bg').getSourceImage();
+            const tex = this.textures.get('lockwall').getSourceImage();
             const imgW = tex.width;
             const imgH = tex.height;
 
             // 按比例“容纳”在画布内（letterbox）
             const scale = Math.min(canvasW / imgW, canvasH / imgH);
 
-            this.bg.setDisplaySize(imgW * scale, imgH * scale);
+            this.bg.setDisplaySize(imgW*scale, imgH*scale);
             this.bg.setPosition(canvasW / 2, canvasH / 2);
         }
 
@@ -86,15 +83,35 @@
 
     class PWScene extends Phaser.Scene {
         constructor(){ super('P'); }
-        create(){
-            this.add.text(240, 120, '已切换到下一画面', { color:'#0f0', font:'20px monospace' })
-                .setOrigin(0.5);
-            this.add.text(240, 200, '按 Backspace 返回', { color:'#ccc', font:'14px monospace' })
-                .setOrigin(0.5);
 
-            // 方便你来回测试
+        preload(){
+            this.load.image('pwscreen', 'assets/pwscreen.png');
+        }
+
+        create(){
+            this.bg = this.add.image(0, 0, 'pwscreen').setOrigin(0.5,0.5);
+            this.fitBgToCanvas(this.scale.gameSize.width, this.scale.gameSize.height);
+            this.scale.on('resize', (gameSize) => {
+                this.fitBgToCanvas(gameSize.width, gameSize.height);
+            });
+
+            
             this.back = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         }
+
+        fitBgToCanvas(canvasW, canvasH){
+            // 原图尺寸
+            const tex = this.textures.get('pwscreen').getSourceImage();
+            const imgW = tex.width;
+            const imgH = tex.height;
+
+            // 按比例“容纳”在画布内（letterbox）
+            const scale = Math.min(canvasW / imgW, canvasH / imgH);
+
+            this.bg.setDisplaySize(imgW*scale, imgH*scale);
+            this.bg.setPosition(canvasW / 2, canvasH / 2);
+        }
+
         update(){
             if (Phaser.Input.Keyboard.JustDown(this.back)) this.scene.start('L');
         }
