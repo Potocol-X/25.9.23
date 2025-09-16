@@ -20,7 +20,7 @@
         }
 
         create(){
-            this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'bg')
+            this.add.image(this.sys.game.config.width/2, this.sys.game.config.height/2, 'lockwall')
                 .setOrigin(0.5)
                 .setDisplaySize(this.sys.game.config.width, this.sys.game.config.height);
 
@@ -83,12 +83,16 @@
     }
 
     const config = {
-      type: Phaser.AUTO,
-      parent: 'game',
-      width: 1179,
-      height: 2556,
-      backgroundColor: '#FFFFFF',
-      scene: [LockScene,PWScene],
+        type: Phaser.AUTO,
+        parent: 'game',
+        width: 1179,
+        height: 2556,
+        scale: {
+            mode: Phaser.Scale.RESIZE,   // ⭐ 自动跟随窗口大小
+            autoCenter: Phaser.Scale.CENTER_BOTH
+        },
+        backgroundColor: '#FFFFFF',
+        scene: [LockScene,PWScene],
     };
 
     new Phaser.Game(config);
