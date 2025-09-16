@@ -15,7 +15,6 @@
       constructor(){ super('L'); }
 
         preload(){
-            // 动态生成一张 32x32 的“球”贴图，省去找图片
             this.load.image('lockwall', 'assets/lockwall.png');
         }
 
@@ -25,10 +24,10 @@
                 .setDisplaySize(this.sys.game.config.width, this.sys.game.config.height);*/
 
             this.bg = this.add.image(0, 0, 'lockwall').setOrigin(0.5,0.5);
-            this.fitBgToCanvas(this.scale.gameSize.width, this.scale.gameSize.height);
+            /*this.fitBgToCanvas(this.scale.gameSize.width, this.scale.gameSize.height);
             this.scale.on('resize', (gameSize) => {
                 this.fitBgToCanvas(gameSize.width, gameSize.height);
-            });
+            });*/
 
             // --- 1) 电脑端：Enter ---
             this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
@@ -110,7 +109,7 @@
             mode: Phaser.Scale.RESIZE,   // ⭐ 自动跟随窗口大小
             autoCenter: Phaser.Scale.CENTER_BOTH
         },
-        backgroundColor: '#000000',
+        backgroundColor: '#242424',
         scene: [LockScene,PWScene],
     };
 
