@@ -6,13 +6,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- 引入 Phaser（CDN） -->
   <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
-  <style>html,body,#game{height:100%;margin:0;background:#111;}</style>
+  <style>
+    html,body,#game{height:100%;margin:0;background:#111;}
+    .btn{padding:8px 14px;border-radius:6px;border:none;background:#4f8cff;color:#fff;cursor:pointer}
+  </style>
 </head>
 <body>
   <div id="game"></div>
   <script>
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzCF1HpPaQPUWeUCX0_1y1n9i0X99-cOoa_9H9Uzy0GMyXNxOZKxmr31ufRYtyWffortA/exec';
+    // 如果你的脚本里做了简单密钥校验（可选）
+
+    // 通用上报函数：把任意数据写入表格
+    async function reportToSheet(payload) {
+    // 最稳：用 no-cors（发得出去即可；不读取响应，避免 CORS）
+    await fetch(
+        WEB_APP_URL,
+        {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        }
+    );
+    }
+
     class LockScene extends Phaser.Scene {
-      constructor(){ super('L'); }
+        constructor(){ super('L'); }
 
         preload(){
             this.load.image('lockwall', 'assets/lockwall.png');
@@ -85,23 +105,269 @@
         constructor(){ super('P'); }
 
         preload(){
-            this.load.image('pwscreen', 'assets/pwscreen.png');
+            this.load.image('pw0', 'assets/pwscreen.png');
+            this.load.image('pw1', 'assets/pwscreen-1.png');
+            this.load.image('pw2', 'assets/pwscreen-2.png');
+            this.load.image('pw3', 'assets/pwscreen-3.png');
+            this.load.image('pw4', 'assets/pwscreen-4.png');
+            this.load.image('pw-1', 'assets/pwscreen-n.png');
         }
 
         create(){
-            this.bg = this.add.image(0, 0, 'pwscreen').setOrigin(0.5,0.5);
+            this.bg = this.add.image(0, 0, 'pw0').setOrigin(0.5,0.5);
             this.fitBgToCanvas(this.scale.gameSize.width, this.scale.gameSize.height);
             this.scale.on('resize', (gameSize) => {
                 this.fitBgToCanvas(gameSize.width, gameSize.height);
             });
 
-            
+            this.pwArray = [];
+
             this.back = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+            this._zoneCTriggered = false;
+
+
+            this.input.keyboard.on('keydown-ONE', () => {
+                this.pwArray.push(1);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.input.keyboard.on('keydown-TWO', () => {
+                this.pwArray.push(2);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.input.keyboard.on('keydown-THREE', () => {
+                this.pwArray.push(3);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.input.keyboard.on('keydown-FOUR', () => {
+                this.pwArray.push(4);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.input.keyboard.on('keydown-FIVE', () => {
+                this.pwArray.push(5);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.input.keyboard.on('keydown-SIX', () => {
+                this.pwArray.push(6);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.input.keyboard.on('keydown-SEVEN', () => {
+                this.pwArray.push(7);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.input.keyboard.on('keydown-EIGHT', () => {
+                this.pwArray.push(8);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.input.keyboard.on('keydown-NINE', () => {
+                this.pwArray.push(9);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.input.keyboard.on('keydown-ZERO', () => {
+                this.pwArray.push(0);
+                this.detectPW();
+                this.nextBG();
+            });
+
+
+
+            this.hitZone1 = this.add.zone(0, 0, 50, 50)
+                .setOrigin(0.5) // 中心点为基准
+                .setInteractive({ useHandCursor: true });
+            this.hitZone2 = this.add.zone(0, 0, 50, 50)
+                .setOrigin(0.5) // 中心点为基准
+                .setInteractive({ useHandCursor: true });
+            this.hitZone3 = this.add.zone(0, 0, 50, 50)
+                .setOrigin(0.5) // 中心点为基准
+                .setInteractive({ useHandCursor: true });
+            this.hitZone4 = this.add.zone(0, 0, 50, 50)
+                .setOrigin(0.5) // 中心点为基准
+                .setInteractive({ useHandCursor: true });
+            this.hitZone5 = this.add.zone(0, 0, 50, 50)
+                .setOrigin(0.5) // 中心点为基准
+                .setInteractive({ useHandCursor: true });
+            this.hitZone6 = this.add.zone(0, 0, 50, 50)
+                .setOrigin(0.5) // 中心点为基准
+                .setInteractive({ useHandCursor: true });
+            this.hitZone7 = this.add.zone(0, 0, 50, 50)
+                .setOrigin(0.5) // 中心点为基准
+                .setInteractive({ useHandCursor: true });
+            this.hitZone8 = this.add.zone(0, 0, 50, 50)
+                .setOrigin(0.5) // 中心点为基准
+                .setInteractive({ useHandCursor: true });
+            this.hitZone9 = this.add.zone(0, 0, 50, 50)
+                .setOrigin(0.5) // 中心点为基准
+                .setInteractive({ useHandCursor: true });
+            this.hitZone0 = this.add.zone(0, 0, 50, 50)
+                .setOrigin(0.5) // 中心点为基准
+                .setInteractive({ useHandCursor: true });
+            this.hitZonec = this.add.zone(0, 0, 50, 50)
+                .setOrigin(0.5) // 中心点为基准
+                .setInteractive({ useHandCursor: true });
+
+            this.debugGraphics = this.add.graphics();
+
+            // 调用一次适配函数（初始化）
+            this.resizeZone(this.scale.gameSize.width, this.scale.gameSize.height,);
+
+            // 窗口变化时自动调整
+            this.scale.on('resize', (gs) => {
+                this.resizeZone(gs.width, gs.height);
+            });
+
+            // 点击判定区域 → 触发逻辑
+            this.hitZone1.on('pointerdown', (p) => {
+                console.log('点到判定区域', p.x, p.y);
+                this.pwArray.push(1);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.hitZone2.on('pointerdown', (p) => {
+                console.log('点到判定区域', p.x, p.y);
+                this.pwArray.push(2);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.hitZone3.on('pointerdown', (p) => {
+                console.log('点到判定区域', p.x, p.y);
+                this.pwArray.push(3);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.hitZone4.on('pointerdown', (p) => {
+                console.log('点到判定区域', p.x, p.y);
+                this.pwArray.push(4);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.hitZone5.on('pointerdown', (p) => {
+                console.log('点到判定区域', p.x, p.y);
+                this.pwArray.push(5);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.hitZone6.on('pointerdown', (p) => {
+                console.log('点到判定区域', p.x, p.y);
+                this.pwArray.push(6);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.hitZone7.on('pointerdown', (p) => {
+                console.log('点到判定区域', p.x, p.y);
+                this.pwArray.push(7);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.hitZone8.on('pointerdown', (p) => {
+                console.log('点到判定区域', p.x, p.y);
+                this.pwArray.push(8);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.hitZone9.on('pointerdown', (p) => {
+                console.log('点到判定区域', p.x, p.y);
+                this.pwArray.push(9);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.hitZone0.on('pointerdown', (p) => {
+                console.log('点到判定区域', p.x, p.y);
+                this.pwArray.push(0);
+                this.detectPW();
+                this.nextBG();
+            });
+            this.hitZonec.on('pointerdown', (p) => {
+                console.log('点到判定区域', p.x, p.y);
+                if (this._zoneCTriggered) return;
+                this._zoneCTriggered = true;
+                this.scene.start('L');
+            });
+
         }
+
+        detectPW(){
+            if(this.pwArray.length < 4) return;
+            if(this.pwArray[0]==2 && this.pwArray[1]==5 && this.pwArray[2]==2 && this.pwArray[3]==3){
+                this.scene.start('S');
+            }
+            else{
+                this.pwArray = [];
+            }
+        }
+
+        nextBG(){
+            if(this.bg.texture.key === 'pw0'){
+                this.bg.setTexture('pw1');
+            }
+            else if(this.bg.texture.key === 'pw1'){
+                this.bg.setTexture('pw2');
+            }
+            else if(this.bg.texture.key === 'pw2'){
+                this.bg.setTexture('pw3');
+            }
+            else if(this.bg.texture.key === 'pw3'){
+                this.bg.setTexture('pw-1');
+            }
+            else if(this.bg.texture.key === 'pw-1'){
+                this.bg.setTexture('pw1');
+            }
+
+        }
+
+        resizeZone(canvasW, canvasH) {
+            // 比例位置（30% 宽，70% 高）
+            //const relX = 0.5, relY = 0.92;
+            // 区域大小相对于画布宽高（20% 宽，10% 高）
+            const relH = 0.093;
+            //const relC = 0.085;
+
+            // 计算实际像素
+            //const x = canvasW * relX;
+            //const y = canvasH * relY;
+            const h = canvasH * relH;
+            //const ch = canvasH * relC;
+            //const w = ch*2;
+
+            // 设置 zone 的位置与大小
+            this.hitZone1.setPosition(canvasW * 0.4395, canvasH * 0.3892);
+            this.hitZone2.setPosition(canvasW * 0.5, canvasH * 0.3892);
+            this.hitZone3.setPosition(canvasW * 0.5605, canvasH * 0.3892);
+            this.hitZone4.setPosition(canvasW * 0.4395, canvasH * 0.502);
+            this.hitZone5.setPosition(canvasW * 0.5, canvasH * 0.502);
+            this.hitZone6.setPosition(canvasW * 0.5605, canvasH * 0.502);
+            this.hitZone7.setPosition(canvasW * 0.4395, canvasH * 0.6153);
+            this.hitZone8.setPosition(canvasW * 0.5, canvasH * 0.6153);
+            this.hitZone9.setPosition(canvasW * 0.5605, canvasH * 0.6153);
+            this.hitZone0.setPosition(canvasW * 0.5, canvasH * 0.728);
+            this.hitZonec.setPosition(canvasW * 0.5, canvasH * 0.93)
+
+            this.hitZone1.setSize(h, h);
+            this.hitZone2.setSize(h, h);
+            this.hitZone3.setSize(h, h);
+            this.hitZone4.setSize(h, h);
+            this.hitZone5.setSize(h, h);
+            this.hitZone6.setSize(h, h);
+            this.hitZone7.setSize(h, h);
+            this.hitZone8.setSize(h, h);
+            this.hitZone9.setSize(h, h);
+            this.hitZone0.setSize(h, h);
+            this.hitZonec.setSize(canvasH*0.085*2, canvasH*0.085);
+
+
+            
+        } 
 
         fitBgToCanvas(canvasW, canvasH){
             // 原图尺寸
-            const tex = this.textures.get('pwscreen').getSourceImage();
+            const tex = this.bg.texture.getSourceImage();
             const imgW = tex.width;
             const imgH = tex.height;
 
@@ -117,6 +383,114 @@
         }
     }
 
+    class PassScene extends Phaser.Scene {
+        constructor(){ super('S'); }
+
+        preload(){
+            this.load.image('lockwall', 'assets/lockwall.png');
+        }
+
+        create(){
+            const w3 = this.scale.gameSize.width;
+            const h3 = this.scale.gameSize.height;
+
+            this.add.text(w3/2, h3/2-60, '请输入你的名字', { color:'#fff', font:'20px monospace' }).setOrigin(0.5);
+
+            // 1) DOM 输入框（启用前需在 Game 配置里 dom.createContainer=true）
+            const w=220, h=40;
+            const inputCss = `
+            width:${w}px;height:${h}px;
+            background:#222;border:1px solid #555;border-radius:8px;
+            color:#fff;outline:none;padding:0 12px;
+            font:18px monospace;caret-color:#fff;
+            `;
+            this.nameInput = this.add.dom(w3/2, h3/2, 'input', inputCss);
+            this.nameInput.setOrigin(0.5);
+            const el = this.nameInput.node;
+            el.placeholder = '昵称就行';
+            el.maxLength = 12;
+            el.autocapitalize = 'off';
+            el.autocomplete  = 'off';
+            el.autocorrect   = 'off';
+            el.spellcheck    = false;
+            el.inputMode     = 'text'; // 仅数字可用 'numeric'
+            el.focus();
+
+            // 过滤：只保留字母/数字/下划线（可按需修改）
+            /*el.addEventListener('input', () => {
+            el.value = el.value.replace(/[^\w]/g, '').slice(0, 12);
+            });*/
+
+            // 2) 回车提交
+            el.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') this.submitName();
+            });
+
+            // 3) 按钮提交
+            const btn = this.add.dom(w3/2, h3/2+60, 'button', '', '确认');
+            btn.node.className = 'btn';
+            btn.addListener('click');
+            btn.on('click', () => this.submitName());
+
+            // 提示展示
+            this.tip = this.add.text(240, 230, '', { color:'#0f0', font:'16px monospace' }).setOrigin(0.5);
+        }
+
+        submitName(){
+            const nickname = this.nameInput.node.value.trim();
+            if (!nickname) { this.tip.setText('名字不可为空'); return; }
+
+
+            // TODO: 在这里把昵称用于游戏/上传到后端/切换场景
+            this.tip.setText(`你好，${nickname}！`);
+
+
+            // 构造要写入表格的字段（和你 Apps Script 里 appendRow 的字段顺序/名称一致即可）
+            const data = {
+                nickname,
+            };
+
+            reportToSheet(data);
+
+            // 例：切到游戏主场景，或关闭输入
+            // this.scene.start('game', { nickname: nick });
+            this.scene.start('F');
+        }
+        
+    }
+
+    class FinishScene extends Phaser.Scene {
+        constructor(){ super('F'); }
+
+        preload(){
+            this.load.image('greetcard', 'assets/finish.png');
+        }
+
+        create(){
+            
+            this.bg = this.add.image(0, 0, 'greetcard').setOrigin(0.5,0.5);
+            this.fitBgToCanvas(this.scale.gameSize.width, this.scale.gameSize.height);
+            this.scale.on('resize', (gameSize) => {
+                this.fitBgToCanvas(gameSize.width, gameSize.height);
+            });
+
+        }
+
+        fitBgToCanvas(canvasW, canvasH){
+            // 原图尺寸
+            const tex = this.textures.get('greetcard').getSourceImage();
+            const imgW = tex.width;
+            const imgH = tex.height;
+
+            // 按比例“容纳”在画布内（letterbox）
+            const scale = Math.min(canvasW / imgW, canvasH / imgH);
+
+            this.bg.setDisplaySize(imgW*scale, imgH*scale);
+            this.bg.setPosition(canvasW / 2, canvasH / 2);
+        }
+        
+    }
+
     const config = {
         type: Phaser.AUTO,
         parent: 'game',
@@ -127,7 +501,8 @@
             autoCenter: Phaser.Scale.CENTER_BOTH
         },
         backgroundColor: '#242424',
-        scene: [LockScene,PWScene],
+        scene: [LockScene,PWScene,PassScene,FinishScene],
+        dom: { createContainer: true }
     };
 
     new Phaser.Game(config);
